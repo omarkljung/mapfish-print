@@ -39,6 +39,7 @@ import org.opengis.filter.expression.Literal;
 import java.awt.Color;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -104,14 +105,7 @@ public final class JsonStyleParserHelper {
     static final String STROKE_DASHSTYLE_DASHDOT = "dashdot";
     static final String STROKE_DASHSTYLE_LONGDASH = "longdash";
     static final String STROKE_DASHSTYLE_LONGDASHDOT = "longdashdot";
-    static final Set<Set<String>> COMPATIBLE_MIMETYPES = Sets.newIdentityHashSet();
-    static {
-        COMPATIBLE_MIMETYPES.add(Sets.newHashSet("image/jpeg", "image/jpg"));
-        COMPATIBLE_MIMETYPES.add(Sets.newHashSet("image/jpeg1000", "image/jpg2000"));
-        COMPATIBLE_MIMETYPES.add(Sets.newHashSet("image/tiff", "image/tif"));
-    }
 
-    private static final String[] SUPPORTED_MIME_TYPES = ImageIO.getReaderMIMETypes();
     private static final String DEFAULT_POINT_MARK = "circle";
     private static final Pattern VALUE_UNIT_PATTERN = Pattern.compile("^([0-9.]+)([a-z]*)");
 
@@ -732,45 +726,17 @@ public final class JsonStyleParserHelper {
         if (!Strings.isNullOrEmpty(styleJson.optString(JSON_GRAPHIC_FORMAT))) {
             mimeType = styleJson.getString(JSON_GRAPHIC_FORMAT);
         } else {
-            int separatorPos = externalGraphicFile.lastIndexOf(".");
-
-            if (separatorPos >= 0) {
-                mimeType = "image/" + externalGraphicFile.substring(separatorPos + 1).toLowerCase();
-            } else {
-                mimeType = "";
-            }
-        }
-        mimeType = toSupportedMimeType(mimeType);
-        return mimeType;
-    }
-
-    private String toSupportedMimeType(final String mimeType) {
-        for (Set<String> compatibleMimeType : COMPATIBLE_MIMETYPES) {
-            if (compatibleMimeType.contains(mimeType.toLowerCase())) {
-                for (String compatible : compatibleMimeType) {
-                    if (isSupportedMimetype(compatible)) {
-                        return compatible;
-                    }
-                }
-            }
+            URLConnection connexion = new URL(externalGraphicFile).openConnection();
+            String contentType = connexion.getHeaderField("Content-Type");
+            int index = contentType.lastIndexOf(";");
+            mimeType = index >= 0 ? contentType.substring(0, index) : contentType;
         }
         return mimeType;
-    }
-
-    private boolean isSupportedMimetype(final String mimeType) {
-        for (String supported : SUPPORTED_MIME_TYPES) {
-            if (supported.equalsIgnoreCase(mimeType)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public void setVersion(final Versions version) {
         this.version = version;
     }
-
 
     private <T> Expression parseExpression(final T defaultValue,
                                            final PJsonObject styleJson,
