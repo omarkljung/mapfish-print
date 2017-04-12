@@ -558,10 +558,6 @@ public final class CreateMapProcessor extends AbstractProcessor<CreateMapProcess
                 // center the map on the center of the feature bounds
                 Coordinate center = bounds.centre();
                 mapValues.center = new double[] {center.x, center.y};
-                if (mapValues.zoomToFeatures.minScale != null) {
-                    mapValues.scale = mapValues.zoomToFeatures.minScale;
-                }
-                mapValues.bbox = null;
                 mapValues.recalculateBounds();
             } else if (mapValues.zoomToFeatures.zoomType == ZoomType.EXTENT) {
                 if (bounds.getWidth() == 0.0 && bounds.getHeight() == 0.0) {
