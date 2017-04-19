@@ -116,4 +116,45 @@ public class ValidationTest extends PrintTestCase {
 
         map.validate();
     }
+    
+    @Test
+    public void testVariablePageSize() {
+        Page page = new Page();
+        page.setPageSize("${pageSize}");
+
+        // Needed to pass validation
+        ColumnsBlock rootColumns = new ColumnsBlock();
+        page.setItems(Arrays.asList((Block) rootColumns));
+        TextBlock textBlock = new TextBlock();
+        final List<Block> cols = new ArrayList<Block>();
+        cols.add(textBlock);
+        rootColumns.setItems(cols);
+        
+        page.validate();
+    }
+    
+    @Test
+    public void testVariableMapSize() {
+    	MapBlock map = new MapBlock();
+    	map.setWidth("${mapWidth}");
+    	map.setHeight("${mapHeight}");
+                
+        map.validate();
+    }
+    
+    @Test
+    public void testVariableScale() {
+    	Page page = new Page();
+        page.setPageSize("${pageSize}");
+
+        // Needed to pass validation
+        ColumnsBlock rootColumns = new ColumnsBlock();
+        page.setItems(Arrays.asList((Block) rootColumns));
+        TextBlock textBlock = new TextBlock();
+        final List<Block> cols = new ArrayList<Block>();
+        cols.add(textBlock);
+        rootColumns.setItems(cols);
+        
+        page.validate();
+    }
 }

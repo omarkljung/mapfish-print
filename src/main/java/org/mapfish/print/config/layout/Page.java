@@ -116,7 +116,10 @@ public class Page {
     public void setPageSize(String pageSize) {
         this.pageSize = pageSize;
         try {
-            PageSize.getRectangle(pageSize);
+        	// Only validate if pageSize is fixed.
+        	if (!pageSize.contains("${")) {
+        		PageSize.getRectangle(pageSize);
+        	}
         } catch (RuntimeException e) {
             throw new InvalidValueException("pageSize", pageSize);
         }
