@@ -68,6 +68,9 @@ public class LabelRenderer {
             String[] labels = label.split("\n");
             String fontSize = style.optString("fontSize", "12");
             String fontWeight = style.optString("fontWeight", "normal");
+            String fontStyle = style.optString("fontStyle", "");
+            fontWeight = fontWeight + " " + fontStyle;
+            
             Coordinate center = geometry.getCentroid().getCoordinate();
             center = GeometriesRenderer.transformCoordinate(center, affineTransform);
             float f = context.getStyleFactor();
