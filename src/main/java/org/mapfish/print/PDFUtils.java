@@ -690,14 +690,12 @@ public class PDFUtils {
         }
         myFontSize = (float) Double.parseDouble(fontSize.toLowerCase()
                 .replaceAll("px", ""));
-        if (fontWeight.toUpperCase().contains("NORMAL")) {
-            myFontWeight = Font.NORMAL;
-        } else if (fontWeight.toUpperCase().contains("BOLD")) {
-            myFontWeight = Font.BOLD;
-        } else if (fontWeight.toUpperCase().contains("ITALIC")) {
-            myFontWeight = Font.ITALIC;
-        } else {
-            myFontWeight = Font.NORMAL;
+        myFontWeight = Font.NORMAL;
+        if (fontWeight.toUpperCase().contains("BOLD")) {
+            myFontWeight += Font.BOLD;
+        }
+        if (fontWeight.toUpperCase().contains("ITALIC")) {
+            myFontWeight += Font.ITALIC;
         }
         Font pdfFont = new Font(myFontValue, myFontSize, myFontWeight);
         return pdfFont.getCalculatedBaseFont(false);
