@@ -20,6 +20,7 @@
 package org.mapfish.print.servlet;
 
 import com.google.common.collect.Maps;
+
 import org.apache.log4j.Logger;
 import org.mapfish.print.MapPrinter;
 import org.mapfish.print.ShellMapPrinter;
@@ -31,7 +32,10 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
@@ -79,13 +83,14 @@ public abstract class BaseMapServlet extends HttpServlet {
         if (!configFile.isAbsolute() || !configFile.exists()) {
 
             LOGGER.info("Attempting to locate app config file: '" + app + " in the webapplication.");
-            String realPath = getServletContext().getRealPath(app);
+            String realPath = Paths.get(configPath).resolveSibling(app).toString();
+            
 
             if (realPath != null) {
                 configFile = new File(realPath);
             } else {
-                LOGGER.info("Unable to find config file in web application using getRealPath.  Adding a / because that is often dropped");
-                realPath = getServletContext().getRealPath("/" + app);
+                LOGGER.info("Unable to find config file in web application using resolveSibling.  Adding a / because that is often dropped");
+                realPath = Paths.get(configPath).resolveSibling("/" + app).toString();
                 configFile = new File(realPath);
             }
         }
